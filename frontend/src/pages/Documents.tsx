@@ -47,7 +47,15 @@ export default function Documents() {
     filtered.map((doc) => (
       <div key={doc.id} className="document-card">
         <div className="document-info">
-          <strong>{doc.title}</strong>
+          <div className="doc-title-row">
+  <strong>{doc.title}</strong>
+
+ {(doc.comments_count ?? 0) > 0 && (
+  <span className="badge-comment">
+    {doc.comments_count} comentario
+  </span>
+)}
+</div>
 
           {doc.description && (
             <span className="doc-desc">
