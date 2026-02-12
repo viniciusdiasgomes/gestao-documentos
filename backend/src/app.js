@@ -3,6 +3,7 @@ import cors from "cors";
 import path from "path";
 import "dotenv/config";
 
+
 import { pool } from "./database/db.js";
 import documentsRoutes from "./routes/documents.routes.js";
 
@@ -14,7 +15,6 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
-
 
 //testar banco de dados
 app.get("/test-db", async (req, res) => {

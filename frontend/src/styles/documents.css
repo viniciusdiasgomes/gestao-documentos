@@ -25,21 +25,53 @@
   font-size: 1rem;
 }
 
-.documents-list {
+.document-list {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 14px;
+  margin-top: 16px;
 }
 
 .document-card {
-  background: rgba(255, 255, 255, 0.08);
-  padding: 14px 16px;
-  border-radius: 10px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+
+  padding: 18px 22px;
+  border-radius: 14px;
+
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  text-decoration: none;
+
+  transition: all 0.2s ease;
 }
 
+.document-card:hover {
+  background: rgba(255, 255, 255, 0.14);
+  transform: translateY(-2px);
+}
+
+.document-info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.doc-description {
+  font-size: 0.85rem;
+  opacity: 0.85;
+}
+
+.doc-file {
+  font-size: 0.8rem;
+  opacity: 0.8;
+}
+
+.doc-date {
+  font-size: 0.85rem;
+  opacity: 0.8;
+}
 .document-info strong {
   display: block;
   font-size: 1rem;

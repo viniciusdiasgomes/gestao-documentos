@@ -71,7 +71,7 @@ export function UploadForm({ onSuccess }: Props) {
       </div>
 
       <div className="form-group">
-        <label>Descrição (opcional)</label>
+        <label>Comentario (opcional)</label>
         <textarea
           placeholder="Informações adicionais sobre o documento"
           value={description}

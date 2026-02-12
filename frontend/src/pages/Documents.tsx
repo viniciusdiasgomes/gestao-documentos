@@ -1,13 +1,13 @@
 import "../styles/documents.css";
 import { useDocuments } from "../hooks/useDocuments";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-
+import { useNavigate, Link } from "react-router-dom";
 
 export default function Documents() {
   const { documents } = useDocuments();
   const [search, setSearch] = useState("");
   const navigate = useNavigate();
+
   const filtered = documents
     .filter((doc) =>
       `${doc.title} ${doc.description ?? ""}`
@@ -18,25 +18,19 @@ export default function Documents() {
       (a, b) =>
         new Date(b.created_at).getTime() -
         new Date(a.created_at).getTime()
-    )
-    .slice(0, 7);
+    );
 
   return (
-
     <main className="documents-container">
-        <button
-  className="back-button"
-  onClick={() => navigate("/")}
->
-Voltar
-</button>
-      {/* CABEÇALHO */}
+      <button className="back-button" onClick={() => navigate("/")}>
+         Voltar
+      </button>
+
       <header className="documents-header">
         <h2>Central de Documentos</h2>
         <p>Visualize, organize e acompanhe seus documentos</p>
       </header>
 
-      {/* BUSCA */}
       <div className="documents-search">
         <input
           type="text"
@@ -46,29 +40,34 @@ Voltar
         />
       </div>
 
-      {/* LISTA */}
       <section className="documents-list">
         {filtered.length === 0 ? (
           <p className="empty">Nenhum documento encontrado.</p>
         ) : (
           filtered.map((doc) => (
-            <div key={doc.id} className="document-card">
+            <Link
+              key={doc.id}
+              to={`/documents/${doc.id}`}
+              className="document-card"
+            >
               <div className="document-info">
                 <strong>{doc.title}</strong>
-                <span>
-                  {new Date(doc.created_at).toLocaleDateString()}
+
+                {doc.description && (
+                  <span className="doc-desc">
+                    {doc.description}
+                  </span>
+                )}
+
+                <span className="doc-file">
+                  📎 {doc.original_name}
                 </span>
               </div>
 
-              <a
-                href={`http://localhost:3333/uploads/${doc.file}`}
-                target="_blank"
-                rel="noreferrer"
-                className="document-action"
-              >
-                Abrir
-              </a>
-            </div>
+              <span className="doc-date">
+                {new Date(doc.created_at).toLocaleDateString()}
+              </span>
+            </Link>
           ))
         )}
       </section>

@@ -1,5 +1,27 @@
 import { pool } from "../database/db.js";
 
+export async function listDocuments(req, res) {
+  try {
+    const [rows] = await pool.query(`
+      SELECT 
+        id,
+        title,
+        description,
+        filename,
+        original_name,
+        created_at
+      FROM documents
+      ORDER BY created_at DESC
+      LIMIT 7
+    `);
+
+    res.json(rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Erro ao buscar documentos" });
+  }
+}
+
 export async function createDocument(req, res) {
   try {
     const { title, description } = req.body;
@@ -32,5 +54,41 @@ export async function createDocument(req, res) {
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Erro ao salvar documento" });
+  }
+}
+export async function getDocumentById(req, res) {
+  try {
+    const { id } = req.params;
+
+    const [[doc]] = await pool.query(
+      `
+      SELECT *
+      FROM documents
+      WHERE id = ?
+      `,
+      [id]
+    );
+
+    if (!doc) {
+      return res.status(404).json({ error: "Documento não encontrado" });
+    }
+
+    const [comments] = await pool.query(
+      `
+      SELECT id, text, created_at
+      FROM comments
+      WHERE document_id = ?
+      ORDER BY created_at DESC
+      `,
+      [id]
+    );
+
+    res.json({
+      ...doc,
+      comments,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Erro ao buscar documento" });
   }
 }
