@@ -1,4 +1,5 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { API_URL } from "../services/api";
 
 type Props = {
   documents: any[];
@@ -11,15 +12,36 @@ export function DocumentList({
   limit,
   order = "desc",
 }: Props) {
+  const navigate = useNavigate();
+
   const sorted = [...documents].sort((a, b) =>
     order === "desc"
       ? new Date(b.created_at).getTime() -
-      new Date(a.created_at).getTime()
+        new Date(a.created_at).getTime()
       : new Date(a.created_at).getTime() -
-      new Date(b.created_at).getTime()
+        new Date(b.created_at).getTime()
   );
 
   const visible = limit ? sorted.slice(0, limit) : sorted;
+
+  async function handleDelete(id: number) {
+    const confirmDelete = window.confirm(
+      "Tem certeza que deseja excluir este documento?"
+    );
+
+    if (!confirmDelete) return;
+
+    try {
+      await fetch(`${API_URL}/documents/${id}`, {
+        method: "DELETE",
+      });
+
+      // Recarrega a página após excluir
+      window.location.reload();
+    } catch {
+      alert("Erro ao excluir documento");
+    }
+  }
 
   return (
     <div className="document-list">
@@ -31,15 +53,13 @@ export function DocumentList({
 
               {(doc.comments_count ?? 0) > 0 && (
                 <span className="badge-comment">
-                  💬 {doc.comments_count} comentario
+                  💬 {doc.comments_count} comentário
                 </span>
               )}
             </div>
 
             {doc.description && (
-              <span className="doc-desc">
-                {doc.description}
-              </span>
+              <span className="doc-desc">{doc.description}</span>
             )}
 
             <span className="doc-file">
@@ -52,12 +72,32 @@ export function DocumentList({
               {new Date(doc.created_at).toLocaleDateString()}
             </span>
 
-            <Link
-              to={`/documents/${doc.id}`}
-              className="btn-view-doc"
-            >
-              Ver documento
-            </Link>
+            <div className="doc-actions-inline">
+              <Link
+                to={`/documents/${doc.id}`}
+                className="btn-view-doc"
+              >
+                Ver
+              </Link>
+
+              <button
+                className="btn-icon edit"
+                onClick={() =>
+                  navigate(`/documents/${doc.id}/edit`)
+                }
+                title="Editar documento"
+              >
+                ✏️
+              </button>
+
+              <button
+                className="btn-icon delete"
+                onClick={() => handleDelete(doc.id)}
+                title="Excluir documento"
+              >
+                🗑️
+              </button>
+            </div>
           </div>
         </div>
       ))}

@@ -171,3 +171,57 @@ export async function deleteComment(req, res) {
     res.status(500).json({ error: "Erro ao excluir comentário" });
   }
 }
+
+export async function updateDocument(req, res) {
+  try {
+    const documentId = Number(req.params.id);
+    const { title, description } = req.body;
+
+    if (!title) {
+      return res.status(400).json({
+        error: "Título é obrigatório"
+      });
+    }
+
+    await pool.query(
+      `
+      UPDATE documents
+      SET title = ?, description = ?
+      WHERE id = ?
+      `,
+      [title, description || null, documentId]
+    );
+
+    res.json({ ok: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      error: "Erro ao editar documento"
+    });
+  }
+}
+
+export async function deleteDocument(req, res) {
+  try {
+    const documentId = Number(req.params.id);
+
+    // remove comentários
+    await pool.query(
+      `DELETE FROM comments WHERE document_id = ?`,
+      [documentId]
+    );
+
+    // remove documento
+    await pool.query(
+      `DELETE FROM documents WHERE id = ?`,
+      [documentId]
+    );
+
+    res.json({ ok: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      error: "Erro ao excluir documento"
+    });
+  }
+}

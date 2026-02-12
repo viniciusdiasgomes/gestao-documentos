@@ -4,6 +4,9 @@ import Documents from "./pages/Documents";
 import Upload from "./pages/Upload";
 import DocumentDetails from "./pages/DocumentDetails";
 import Header from "./components/Header";
+import EditDocument from "./pages/EditDocument";
+import NotFound from "./pages/NotFound";
+
 
 export default function App() {
   return (
@@ -15,6 +18,11 @@ export default function App() {
         <Route path="/documents" element={<Documents />} />
         <Route path="/documents/:id" element={<DocumentDetails />} /> {/* 👈 ESSENCIAL */}
         <Route path="/upload" element={<Upload />} />
+        <Route
+  path="/documents/:id/edit"
+  element={<EditDocument />}
+/>
+<Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
   );

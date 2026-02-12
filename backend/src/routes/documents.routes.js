@@ -4,6 +4,8 @@ import {
   createDocument,
   listDocuments,
   getDocumentById,
+  updateDocument,
+  deleteDocument,
   createComment,
   updateComment,
   deleteComment,
@@ -21,5 +23,8 @@ router.post("/:id/comments", createComment);
 
 router.put("/:documentId/comments/:commentId", updateComment);
 router.delete("/:documentId/comments/:commentId", deleteComment);
+
+router.put("/:id", updateDocument);
+router.delete("/:id", deleteDocument);
 
 export default router;

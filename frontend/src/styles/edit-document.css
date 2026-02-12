@@ -1,0 +1,61 @@
+.edit-doc-page {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  color: #fff;
+}
+
+.edit-doc-page h2 {
+  margin-bottom: 20px;
+}
+
+.edit-doc-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.edit-doc-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 0.9rem;
+}
+
+.edit-doc-form input,
+.edit-doc-form textarea {
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: none;
+  font-size: 1rem;
+}
+
+.edit-doc-form textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.edit-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.btn-save {
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  color: #022c22;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-cancel {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.2);
+  color: #e5e7eb;
+  padding: 10px 16px;
+  border-radius: 10px;
+  cursor: pointer;
+}

@@ -208,3 +208,38 @@
   background: rgba(255,255,255,0.04);
   color: #e5e7eb;
 }
+.doc-actions-inline {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: rgba(255,255,255,0.08);
+  color: #e5e7eb;
+
+  transition: background .2s ease, transform .2s ease;
+}
+
+.btn-icon:hover {
+  transform: translateY(-1px);
+}
+
+.btn-icon.edit:hover {
+  background: rgba(59, 130, 246, 0.25);
+}
+
+.btn-icon.delete:hover {
+  background: rgba(239, 68, 68, 0.25);
+}
