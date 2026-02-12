@@ -12,7 +12,6 @@ export async function listDocuments(req, res) {
         created_at
       FROM documents
       ORDER BY created_at DESC
-      LIMIT 7
     `);
 
     res.json(rows);
@@ -58,14 +57,14 @@ export async function createDocument(req, res) {
 }
 export async function getDocumentById(req, res) {
   try {
-    const { id } = req.params;
+    const id = Number(req.params.id);
+
+    if (Number.isNaN(id)) {
+      return res.status(400).json({ error: "ID inválido" });
+    }
 
     const [[doc]] = await pool.query(
-      `
-      SELECT *
-      FROM documents
-      WHERE id = ?
-      `,
+      "SELECT * FROM documents WHERE id = ?",
       [id]
     );
 
@@ -75,7 +74,7 @@ export async function getDocumentById(req, res) {
 
     const [comments] = await pool.query(
       `
-      SELECT id, text, created_at
+      SELECT id, content AS text, created_at
       FROM comments
       WHERE document_id = ?
       ORDER BY created_at DESC
@@ -88,7 +87,7 @@ export async function getDocumentById(req, res) {
       comments,
     });
   } catch (err) {
-    console.error(err);
+    console.error("Erro ao buscar documento:", err);
     res.status(500).json({ error: "Erro ao buscar documento" });
   }
 }
