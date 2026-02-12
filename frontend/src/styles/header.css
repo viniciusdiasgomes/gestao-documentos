@@ -1,7 +1,11 @@
+/* =========================
+   HEADER BASE
+========================= */
+
 .header {
   position: relative;
   width: 100%;
-  min-height: 150px;
+  min-height: 160px;
   background: linear-gradient(
     135deg,
     #083344,
@@ -22,23 +26,36 @@
 
 .header-content {
   position: relative;
-  max-width: 1100px;
   width: 100%;
-  padding: 40px;
+  max-width: 1200px;
+  padding: 40px 32px;
+
   display: flex;
   align-items: center;
   gap: 32px;
-  color: #fff;
+
+  color: #ffffff;
 }
+
+/* =========================
+   LOGO
+========================= */
 
 .header-logo {
-  width: 400px;
+  width: 260px;
+  max-width: 100%;
   height: auto;
+  flex-shrink: 0;
 }
 
+/* =========================
+   TEXTO
+========================= */
+
 .header h1 {
-  font-size: 2.5rem;
+  font-size: 2.4rem;
   font-weight: 800;
+  line-height: 1.15;
 }
 
 .header h1 span {
@@ -46,7 +63,78 @@
 }
 
 .header p {
-  margin-top: 8px;
-  font-size: 1.1rem;
+  margin-top: 10px;
+  font-size: 1.05rem;
   opacity: 0.9;
+  max-width: 520px;
+}
+
+/* =========================
+   RESPONSIVO - TABLET
+========================= */
+
+@media (max-width: 900px) {
+  .header-content {
+    padding: 32px 24px;
+    gap: 24px;
+  }
+
+  .header-logo {
+    width: 200px;
+  }
+
+  .header h1 {
+    font-size: 2rem;
+  }
+
+  .header p {
+    font-size: 1rem;
+  }
+}
+
+/* =========================
+   RESPONSIVO - MOBILE
+========================= */
+
+@media (max-width: 640px) {
+  .header {
+    min-height: auto;
+  }
+
+  .header-content {
+    flex-direction: column;
+    text-align: center;
+    padding: 28px 20px;
+    gap: 20px;
+  }
+
+  .header-logo {
+    width: 160px;
+  }
+
+  .header h1 {
+    font-size: 1.7rem;
+  }
+
+  .header p {
+    font-size: 0.95rem;
+  }
+}
+
+/* =========================
+   MOBILE PEQUENO
+========================= */
+
+@media (max-width: 420px) {
+  .header-logo {
+    width: 130px;
+  }
+
+  .header h1 {
+    font-size: 1.5rem;
+  }
+
+  .header p {
+    font-size: 0.9rem;
+  }
 }
