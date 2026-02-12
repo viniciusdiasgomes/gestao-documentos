@@ -4,14 +4,17 @@ export async function listDocuments(req, res) {
   try {
     const [rows] = await pool.query(`
       SELECT 
-        id,
-        title,
-        description,
-        filename,
-        original_name,
-        created_at
-      FROM documents
-      ORDER BY created_at DESC
+  d.id,
+  d.title,
+  d.description,
+  d.filename,
+  d.original_name,
+  d.created_at,
+  COUNT(c.id) AS comments_count
+FROM documents d
+LEFT JOIN comments c ON c.document_id = d.id
+GROUP BY d.id
+ORDER BY d.created_at DESC
     `);
 
     res.json(rows);
@@ -89,5 +92,82 @@ export async function getDocumentById(req, res) {
   } catch (err) {
     console.error("Erro ao buscar documento:", err);
     res.status(500).json({ error: "Erro ao buscar documento" });
+  }
+}
+
+export async function createComment(req, res) {
+  try {
+    const documentId = Number(req.params.id);
+    const { content } = req.body;
+
+    const [[doc]] = await pool.query(
+  "SELECT id FROM documents WHERE id = ?",
+  [documentId]
+);
+
+if (!doc) {
+  return res.status(404).json({
+    error: "Documento não encontrado"
+  });
+}
+
+    if (!content) {
+      return res.status(400).json({
+        error: "Comentário é obrigatório"
+      });
+    }
+
+    await pool.query(
+      `
+      INSERT INTO comments (document_id, content)
+      VALUES (?, ?)
+      `,
+      [documentId, content]
+    );
+
+    res.status(201).json({ ok: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      error: "Erro ao salvar comentário"
+    });
+  }
+}
+
+export async function updateComment(req, res) {
+  try {
+    const commentId = Number(req.params.commentId);
+    const { content } = req.body;
+
+    if (!content) {
+      return res.status(400).json({ error: "Comentário vazio" });
+    }
+
+    await pool.query(
+      `UPDATE comments SET content = ? WHERE id = ?`,
+      [content, commentId]
+    );
+
+    res.json({ ok: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Erro ao editar comentário" });
+  }
+}
+
+
+export async function deleteComment(req, res) {
+  try {
+    const commentId = Number(req.params.commentId);
+
+    await pool.query(
+      `DELETE FROM comments WHERE id = ?`,
+      [commentId]
+    );
+
+    res.json({ ok: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Erro ao excluir comentário" });
   }
 }

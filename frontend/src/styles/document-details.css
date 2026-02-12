@@ -161,3 +161,50 @@
 .muted {
   color: #64748b;
 }
+.comment-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.comment-form textarea {
+  resize: vertical;
+  min-height: 80px;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.04);
+  color: #e5e7eb;
+}
+
+.comment-form button {
+  align-self: flex-end;
+  padding: 8px 14px;
+  border-radius: 10px;
+  border: none;
+  background: #22c55e;
+  color: #022c22;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.comment-form button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.comment-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.comment-item textarea {
+  width: 100%;
+  min-height: 70px;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.04);
+  color: #e5e7eb;
+}

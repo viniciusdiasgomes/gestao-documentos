@@ -10,6 +10,16 @@ export default function DocumentDetails() {
   const [doc, setDoc] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
+
+  const [comment, setComment] = useState("");
+  const [sending, setSending] = useState(false);
+
+
+  const [editingId, setEditingId] = useState<number | null>(null);
+const [editingText, setEditingText] = useState("");
+
+
+
   useEffect(() => {
     async function load() {
       try {
@@ -32,6 +42,22 @@ export default function DocumentDetails() {
 
     load();
   }, [id]);
+
+
+  async function reloadDocument() {
+  try {
+    const res = await fetch(`${API_URL}/documents/${id}`);
+
+    if (!res.ok) {
+      throw new Error("Erro ao recarregar documento");
+    }
+
+    const data = await res.json();
+    setDoc(data);
+  } catch (err) {
+    console.error(err);
+  }
+}
 
   async function handleDownload() {
     try {
@@ -59,6 +85,85 @@ export default function DocumentDetails() {
       alert("Não foi possível baixar o arquivo.");
     }
   }
+
+async function handleAddComment() {
+  if (!comment.trim()) return;
+
+  try {
+    setSending(true);
+
+    const res = await fetch(
+      `${API_URL}/documents/${id}/comments`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          content: comment
+        })
+      }
+    );
+
+    if (!res.ok) {
+      throw new Error("Erro ao comentar");
+    }
+
+    setComment("");
+
+    // Recarrega documento (pra atualizar comentários)
+    const updated = await fetch(
+      `${API_URL}/documents/${id}`
+    ).then(r => r.json());
+
+    setDoc(updated);
+  } catch (err) {
+    console.error(err);
+    alert("Erro ao adicionar comentário");
+  } finally {
+    setSending(false);
+  }
+}
+
+async function handleDeleteComment(commentId: number) {
+  if (!confirm("Deseja excluir este comentário?")) return;
+
+  try {
+    await fetch(
+      `${API_URL}/documents/${id}/comments/${commentId}`,
+      { method: "DELETE" }
+    );
+
+    reloadDocument();
+  } catch (err) {
+    console.error(err);
+    alert("Erro ao excluir comentário");
+  }
+}
+
+
+async function handleUpdateComment(commentId: number) {
+  if (!editingText.trim()) return;
+
+  try {
+    await fetch(
+      `${API_URL}/documents/${id}/comments/${commentId}`,
+      {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ content: editingText }),
+      }
+    );
+
+    setEditingId(null);
+    setEditingText("");
+    reloadDocument();
+  } catch (err) {
+    console.error(err);
+    alert("Erro ao editar comentário");
+  }
+}
+
 
   if (loading) {
     return <p>Carregando documento...</p>;
@@ -148,6 +253,20 @@ export default function DocumentDetails() {
         {/* COMENTÁRIOS */}
         <section className="doc-comments-card">
           <h3>Comentários</h3>
+<div className="comment-form">
+  <textarea
+    placeholder="Escreva um comentário..."
+    value={comment}
+    onChange={(e) => setComment(e.target.value)}
+  />
+
+  <button
+    onClick={handleAddComment}
+    disabled={sending}
+  >
+    {sending ? "Salvando..." : "Adicionar comentário"}
+  </button>
+</div>
 
           {doc.comments.length === 0 ? (
             <p className="muted">
@@ -155,13 +274,62 @@ export default function DocumentDetails() {
             </p>
           ) : (
             doc.comments.map((c: any) => (
-              <div key={c.id} className="comment-item">
-                <p>{c.text}</p>
-                <span>
-                  {new Date(c.created_at).toLocaleString()}
-                </span>
-              </div>
-            ))
+  <div key={c.id} className="comment-item">
+
+    {editingId === c.id ? (
+      <>
+        <textarea
+          value={editingText}
+          onChange={(e) => setEditingText(e.target.value)}
+        />
+
+        <div className="comment-actions">
+          <button
+            className="btn-action primary"
+            onClick={() => handleUpdateComment(c.id)}
+          >
+            Salvar
+          </button>
+
+          <button
+            className="btn-action"
+            onClick={() => setEditingId(null)}
+          >
+            Cancelar
+          </button>
+        </div>
+      </>
+    ) : (
+      <>
+        <p>{c.text}</p>
+
+        <span>
+          {new Date(c.created_at).toLocaleString()}
+        </span>
+
+        <div className="comment-actions">
+          <button
+            className="btn-action"
+            onClick={() => {
+              setEditingId(c.id);
+              setEditingText(c.text);
+            }}
+          >
+            Editar
+          </button>
+
+          <button
+            className="btn-action"
+            onClick={() => handleDeleteComment(c.id)}
+          >
+            Excluir
+          </button>
+        </div>
+      </>
+    )}
+
+  </div>
+))
           )}
         </section>
 

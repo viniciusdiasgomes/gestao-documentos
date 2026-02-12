@@ -8,6 +8,7 @@ type Props = {
 export function UploadForm({ onSuccess }: Props) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [comment, setComment] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [error, setError] = useState("");
 
@@ -45,12 +46,35 @@ export function UploadForm({ onSuccess }: Props) {
     formData.append("file", file);
 
     try {
-      await fetch("http://localhost:3333/documents", {
-        method: "POST",
-        body: formData,
-      });
+      const res = await fetch("http://localhost:3333/documents", {
+  method: "POST",
+  body: formData,
+});
 
-      onSuccess();
+if (!res.ok) {
+  throw new Error("Erro ao criar documento");
+}
+
+const data = await res.json(); // ← pega o ID
+const documentId = data.id;
+
+/* SE tiver comentário, cria */
+if (comment.trim()) {
+  await fetch(
+    `http://localhost:3333/documents/${documentId}/comments`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        content: comment,
+      }),
+    }
+  );
+}
+
+onSuccess();
     } catch {
       setError("Erro ao enviar documento.");
     }
@@ -71,7 +95,7 @@ export function UploadForm({ onSuccess }: Props) {
       </div>
 
       <div className="form-group">
-        <label>Comentario (opcional)</label>
+        <label>Descrição (opcional)</label>
         <textarea
           placeholder="Informações adicionais sobre o documento"
           value={description}
@@ -79,6 +103,15 @@ export function UploadForm({ onSuccess }: Props) {
         />
       </div>
 
+
+    <div className="form-group">
+  <label>Comentário inicial (opcional)</label>
+  <textarea
+    placeholder="Ex: Documento enviado para análise jurídica"
+    value={comment}
+    onChange={(e) => setComment(e.target.value)}
+  />
+</div>
       {/* INPUT DE ARQUIVO ESTILIZADO */}
       <div className="form-group">
         <label>Arquivo</label>
