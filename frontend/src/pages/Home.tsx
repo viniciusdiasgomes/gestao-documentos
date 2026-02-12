@@ -34,10 +34,10 @@ export default function Home() {
 
       {/* ÚLTIMOS DOCUMENTOS */}
       <section className="home-last">
-        <h3>Últimos documentos enviados</h3>
+        <h3>Documentos enviados recentes</h3>
 
         {documents.length > 0 ? (
-          <DocumentList documents={documents.slice(0, 3)} />
+          <DocumentList documents={documents.slice(0, 4)} />
         ) : (
           <p className="empty-text">
             Nenhum documento foi enviado ainda.

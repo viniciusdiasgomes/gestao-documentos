@@ -73,6 +73,9 @@ export default function DocumentDetails() {
     );
   }
 
+
+   const isPdf = doc.filename?.toLowerCase().endsWith(".pdf");
+   const isImage = /\.(png|jpg|jpeg|webp)$/i.test(doc.filename);
   return (
     <main className="doc-page-wrapper">
       <div className="doc-page">
@@ -83,7 +86,7 @@ export default function DocumentDetails() {
             className="btn-back"
             onClick={() => navigate(-1)}
           >
-            ← Voltar
+             Voltar
           </button>
 
           <div className="doc-header-text">
@@ -101,13 +104,46 @@ export default function DocumentDetails() {
           </div>
         </header>
 
-        {/* PDF */}
-        <section className="doc-preview-card">
-          <iframe
-            src={`${API_URL}/uploads/${doc.filename}`}
-            title={doc.title}
-          />
-        </section>
+{/* PREVIEW */}
+<section className="doc-preview-card compact">
+
+  {isPdf && (
+    <>
+      <iframe
+        src={`${API_URL}/uploads/${doc.filename}`}
+        title={doc.title}
+        className="doc-preview-pdf"
+      />
+
+      <button
+        className="btn-preview"
+        onClick={() =>
+          window.open(
+            `${API_URL}/uploads/${doc.filename}`,
+            "_blank"
+          )
+        }
+      >
+        Visualizar em tela cheia
+      </button>
+    </>
+  )}
+
+  {isImage && (
+    <img
+      src={`${API_URL}/uploads/${doc.filename}`}
+      alt={doc.title}
+      className="doc-preview-image"
+      onClick={() =>
+        window.open(
+          `${API_URL}/uploads/${doc.filename}`,
+          "_blank"
+        )
+      }
+    />
+  )}
+
+</section>
 
         {/* COMENTÁRIOS */}
         <section className="doc-comments-card">
