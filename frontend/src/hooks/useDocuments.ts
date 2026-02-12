@@ -5,18 +5,38 @@ import type { DocumentItem } from "../types/document";
 export function useDocuments() {
   const [documents, setDocuments] = useState<DocumentItem[]>([]);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   async function loadDocuments() {
-    setLoading(true);
-    const res = await fetch(`${API_URL}/documents`);
-    const data = await res.json();
-    setDocuments(data);
-    setLoading(false);
+    try {
+      setLoading(true);
+      setError(null);
+
+      const res = await fetch(`${API_URL}/documents`);
+
+      if (!res.ok) {
+        throw new Error("Erro ao buscar documentos");
+      }
+
+      const data: DocumentItem[] = await res.json();
+      setDocuments(data);
+    } catch (err) {
+      console.error(err);
+      setError("Não foi possível carregar os documentos.");
+      setDocuments([]);
+    } finally {
+      setLoading(false);
+    }
   }
 
   useEffect(() => {
     loadDocuments();
   }, []);
 
-  return { documents, loading, reload: loadDocuments };
+  return {
+    documents,
+    loading,
+    error,
+    reload: loadDocuments,
+  };
 }
