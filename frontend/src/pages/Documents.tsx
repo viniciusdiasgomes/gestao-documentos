@@ -41,36 +41,41 @@ export default function Documents() {
       </div>
 
       <section className="documents-list">
-        {filtered.length === 0 ? (
-          <p className="empty">Nenhum documento encontrado.</p>
-        ) : (
-          filtered.map((doc) => (
-            <Link
-              key={doc.id}
-              to={`/documents/${doc.id}`}
-              className="document-card"
-            >
-              <div className="document-info">
-                <strong>{doc.title}</strong>
+  {filtered.length === 0 ? (
+    <p className="empty">Nenhum documento encontrado.</p>
+  ) : (
+    filtered.map((doc) => (
+      <div key={doc.id} className="document-card">
+        <div className="document-info">
+          <strong>{doc.title}</strong>
 
-                {doc.description && (
-                  <span className="doc-desc">
-                    {doc.description}
-                  </span>
-                )}
+          {doc.description && (
+            <span className="doc-desc">
+              {doc.description}
+            </span>
+          )}
 
-                <span className="doc-file">
-                  📎 {doc.original_name}
-                </span>
-              </div>
+          <span className="doc-file">
+            📎 {doc.original_name}
+          </span>
+        </div>
 
-              <span className="doc-date">
-                {new Date(doc.created_at).toLocaleDateString()}
-              </span>
-            </Link>
-          ))
-        )}
-      </section>
+        <div className="document-right">
+          <span className="doc-date">
+            {new Date(doc.created_at).toLocaleDateString()}
+          </span>
+
+          <Link
+            to={`/documents/${doc.id}`}
+            className="btn-view-doc"
+          >
+            Ver documento
+          </Link>
+        </div>
+      </div>
+    ))
+  )}
+</section>
     </main>
   );
 }
