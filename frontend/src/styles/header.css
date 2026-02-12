@@ -1,0 +1,52 @@
+.header {
+  position: relative;
+  width: 100%;
+  min-height: 190px;
+  background: linear-gradient(
+    135deg,
+    #083344,
+    #0f766e,
+    #155e75
+  );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.header-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+}
+
+.header-content {
+  position: relative;
+  max-width: 1100px;
+  width: 100%;
+  padding: 40px;
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  color: #fff;
+}
+
+.header-logo {
+  width: 400px;
+  height: auto;
+}
+
+.header h1 {
+  font-size: 2.5rem;
+  font-weight: 800;
+}
+
+.header h1 span {
+  color: #90ffb5;
+}
+
+.header p {
+  margin-top: 8px;
+  font-size: 1.1rem;
+  opacity: 0.9;
+}
