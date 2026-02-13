@@ -63,7 +63,7 @@ const documentId = data.id;
 /* SE tiver comentário, cria */
 if (comment.trim()) {
   await fetch(
-    `http://localhost:3333/documents/${documentId}/comments`,
+    `${API_URL}documents/${documentId}/comments`,
     {
       method: "POST",
       headers: {
