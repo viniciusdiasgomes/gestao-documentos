@@ -6,6 +6,8 @@ export default function Upload() {
   const navigate = useNavigate();
 
   return (
+     <main className="upload-page">
+    <div className="upload-container">
     <main className="upload-container">
       {/* VOLTAR */}
       <button
@@ -29,5 +31,7 @@ export default function Upload() {
         <UploadForm onSuccess={() => navigate("/documents")} />
       </section>
     </main>
+       </div>
+  </main>
   );
 }

@@ -3,6 +3,8 @@ import { useDocuments } from "../hooks/useDocuments";
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { API_URL } from "../services/api";
+import editIcon from "../assets/icone/editar-arquivo.png";
+import deleteIcon from "../assets/icone/botao-de-deletar.png";
 
 export default function Documents() {
   const { documents } = useDocuments();
@@ -51,14 +53,18 @@ export default function Documents() {
         <p>Visualize, organize e acompanhe seus documentos</p>
       </header>
 
-      <div className="documents-search">
-        <input
-          type="text"
-          placeholder="Buscar por título ou descrição..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-      </div>
+      <div className="documents-filters">
+  {/* BUSCA */}
+  <input
+    type="text"
+    placeholder="Buscar por título ou descrição..."
+    value={search}
+    onChange={(e) => setSearch(e.target.value)}
+    className="filter-search"
+  />
+
+ 
+</div>
 
       <section className="documents-list">
         {filtered.length === 0 ? (
@@ -101,23 +107,29 @@ export default function Documents() {
                     Ver
                   </Link>
 
-                  <button
-                    className="btn-icon edit"
-                    onClick={() =>
-                      navigate(`/documents/${doc.id}/edit`)
-                    }
-                    title="Editar documento"
-                  >
-                    ✏️
-                  </button>
+                <button
+                className="btn-icon edit"
+                onClick={() => navigate(`/documents/${doc.id}/edit`)}
+                title="Editar documento"
+              >
+                <img
+                  src={editIcon}
+                  alt="Editar"
+                  className="w-5 h-5"
+                />
+              </button>
 
-                  <button
-                    className="btn-icon delete"
-                    onClick={() => handleDelete(doc.id)}
-                    title="Excluir documento"
-                  >
-                    🗑️
-                  </button>
+              <button
+                className="btn-icon delete"
+                onClick={() => handleDelete(doc.id)}
+                title="Excluir documento"
+              >
+                <img
+                  src={deleteIcon}
+                  alt="Excluir"
+                  className="w-5 h-5"
+                />
+              </button>
                 </div>
               </div>
             </div>

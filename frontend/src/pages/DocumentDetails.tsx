@@ -211,15 +211,27 @@ async function handleUpdateComment(commentId: number) {
 
 {/* PREVIEW */}
 <section className="doc-preview-card compact">
+  <div className="doc-preview-layout">
+    
+    <div className="doc-preview-wrapper small">
+      {isPdf && (
+        <iframe
+          src={`${API_URL}/uploads/${doc.filename}`}
+          title={doc.title}
+          className="doc-preview-pdf"
+        />
+      )}
 
-  {isPdf && (
-    <>
-      <iframe
-        src={`${API_URL}/uploads/${doc.filename}`}
-        title={doc.title}
-        className="doc-preview-pdf"
-      />
+      {isImage && (
+        <img
+          src={`${API_URL}/uploads/${doc.filename}`}
+          alt={doc.title}
+          className="doc-preview-image"
+        />
+      )}
+    </div>
 
+    <div className="doc-preview-actions">
       <button
         className="btn-preview"
         onClick={() =>
@@ -231,23 +243,9 @@ async function handleUpdateComment(commentId: number) {
       >
         Visualizar em tela cheia
       </button>
-    </>
-  )}
+    </div>
 
-  {isImage && (
-    <img
-      src={`${API_URL}/uploads/${doc.filename}`}
-      alt={doc.title}
-      className="doc-preview-image"
-      onClick={() =>
-        window.open(
-          `${API_URL}/uploads/${doc.filename}`,
-          "_blank"
-        )
-      }
-    />
-  )}
-
+  </div>
 </section>
 
         {/* COMENTÁRIOS */}

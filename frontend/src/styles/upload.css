@@ -1,9 +1,25 @@
+/* FUNDO DA PÁGINA (tela toda) */
+.upload-page {
+  min-height: 100vh;
+
+  background-image:
+    linear-gradient(rgba(2, 6, 23, 0.82), rgba(2, 6, 23, 0.82)),
+    url("../assets/fundos-principais/image.png");
+
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed; /* opcional: dá “parallax” */
+}
+
+/* CONTEÚDO CENTRAL (sua caixa) */
 .upload-container {
   max-width: 900px;
   margin: 0 auto;
   padding: 40px 20px;
   color: #ffffff;
 }
+
 
 .upload-header {
   margin-bottom: 30px;

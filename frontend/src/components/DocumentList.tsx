@@ -1,5 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { API_URL } from "../services/api";
+import editIcon from "../assets/icone/editar-arquivo.png";
+import deleteIcon from "../assets/icone/botao-de-deletar.png";
 
 type Props = {
   documents: any[];
@@ -17,9 +19,9 @@ export function DocumentList({
   const sorted = [...documents].sort((a, b) =>
     order === "desc"
       ? new Date(b.created_at).getTime() -
-        new Date(a.created_at).getTime()
+      new Date(a.created_at).getTime()
       : new Date(a.created_at).getTime() -
-        new Date(b.created_at).getTime()
+      new Date(b.created_at).getTime()
   );
 
   const visible = limit ? sorted.slice(0, limit) : sorted;
@@ -82,12 +84,14 @@ export function DocumentList({
 
               <button
                 className="btn-icon edit"
-                onClick={() =>
-                  navigate(`/documents/${doc.id}/edit`)
-                }
+                onClick={() => navigate(`/documents/${doc.id}/edit`)}
                 title="Editar documento"
               >
-                ✏️
+                <img
+                  src={editIcon}
+                  alt="Editar"
+                  className="w-5 h-5"
+                />
               </button>
 
               <button
@@ -95,7 +99,11 @@ export function DocumentList({
                 onClick={() => handleDelete(doc.id)}
                 title="Excluir documento"
               >
-                🗑️
+                <img
+                  src={deleteIcon}
+                  alt="Excluir"
+                  className="w-5 h-5"
+                />
               </button>
             </div>
           </div>
