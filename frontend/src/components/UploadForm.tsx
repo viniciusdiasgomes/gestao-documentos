@@ -1,5 +1,6 @@
 import { useState } from "react";
 import "../styles/upload.css";
+import { API_URL } from "../services/api";
 
 type Props = {
   onSuccess: () => void;
@@ -46,10 +47,11 @@ export function UploadForm({ onSuccess }: Props) {
     formData.append("file", file);
 
     try {
-      const res = await fetch("http://localhost:3333/documents", {
-  method: "POST",
-  body: formData,
-});
+      
+      const res = await fetch(`${API_URL}/documents`, {
+        method: "POST",
+        body: formData,
+      });
 
 if (!res.ok) {
   throw new Error("Erro ao criar documento");
