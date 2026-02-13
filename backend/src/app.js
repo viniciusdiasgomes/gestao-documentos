@@ -18,8 +18,22 @@ app.use(express.json());
 
 //testar banco de dados
 app.get("/test-db", async (req, res) => {
-  const [rows] = await pool.query("SELECT 1");
-  res.json({ ok: true });
+  try {
+    const client = await pool.connect(); // Tenta estabelecer a conexão
+    const result = await client.query("SELECT NOW()");
+    client.release(); // Libera o cliente de volta para o pool
+    res.json({ 
+      status: "Conectado com sucesso! ✅", 
+      time: result.rows[0].now 
+    });
+  } catch (err) {
+    console.error("ERRO NO BANCO:", err.message);
+    res.status(500).json({ 
+      status: "Erro ao conectar ❌", 
+      error: err.message,
+      stack: process.env.NODE_ENV === 'development' ? err.stack : undefined
+    });
+  }
 });
 
 
