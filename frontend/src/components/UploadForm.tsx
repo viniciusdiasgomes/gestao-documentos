@@ -9,7 +9,7 @@ type Props = {
 export function UploadForm({ onSuccess }: Props) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [comment, setComment] = useState("");
+  const [comment] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [error, setError] = useState("");
 
