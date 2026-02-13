@@ -105,15 +105,6 @@ onSuccess();
         />
       </div>
 
-
-    <div className="form-group">
-  <label>Comentário inicial (opcional)</label>
-  <textarea
-    placeholder="Ex: Documento enviado para análise jurídica"
-    value={comment}
-    onChange={(e) => setComment(e.target.value)}
-  />
-</div>
       {/* INPUT DE ARQUIVO ESTILIZADO */}
       <div className="form-group">
         <label>Arquivo</label>
