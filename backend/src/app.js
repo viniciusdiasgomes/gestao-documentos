@@ -9,7 +9,7 @@ import documentsRoutes from "./routes/documents.routes.js";
 
 
 
-const PORT = process.env.PORT || 3333;
+const PORT = process.env.PORT;
 
 const app = express();
 
