@@ -214,13 +214,19 @@ async function handleUpdateComment(commentId: number) {
   <div className="doc-preview-layout">
     
     <div className="doc-preview-wrapper small">
-      {isPdf && (
-        <iframe
-          src={`${API_URL}/uploads/${doc.filename}`}
-          title={doc.title}
-          className="doc-preview-pdf"
-        />
-      )}
+     {isPdf && (
+  <object
+    data={`${API_URL}/uploads/${doc.filename}`}
+    type="application/pdf"
+    className="doc-preview-pdf"
+    width="100%"
+    height="500px"
+  >
+    <p>Seu navegador não pode exibir o PDF. 
+       <a href={`${API_URL}/uploads/${doc.filename}`}>Clique aqui para baixar.</a>
+    </p>
+  </object>
+)}
 
       {isImage && (
         <img
