@@ -2,7 +2,7 @@ import express from "express";
 import cors from "cors";
 import path from "path";
 import "dotenv/config";
-
+import fs from "fs";
 
 import { pool } from "./database/db.js";
 import documentsRoutes from "./routes/documents.routes.js";
@@ -13,6 +13,11 @@ const PORT = process.env.PORT || 3333;
 
 const app = express();
 
+const uploadDir = path.join(process.cwd(), "uploads");
+if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir, { recursive: true });
+    console.log("Pasta 'uploads' criada com sucesso! ✅");
+}
 app.use(cors());
 app.use(express.json());
 
