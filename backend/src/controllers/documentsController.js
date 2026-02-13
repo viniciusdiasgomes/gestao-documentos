@@ -1,20 +1,22 @@
 import { pool } from "../database/db.js";
 
+/* ================= DOCUMENTS ================= */
+
 export async function listDocuments(req, res) {
   try {
-    const [rows] = await pool.query(`
+    const { rows } = await pool.query(`
       SELECT 
-  d.id,
-  d.title,
-  d.description,
-  d.filename,
-  d.original_name,
-  d.created_at,
-  COUNT(c.id) AS comments_count
-FROM documents d
-LEFT JOIN comments c ON c.document_id = d.id
-GROUP BY d.id
-ORDER BY d.created_at DESC
+        d.id,
+        d.title,
+        d.description,
+        d.filename,
+        d.original_name,
+        d.created_at,
+        COUNT(c.id) AS comments_count
+      FROM documents d
+      LEFT JOIN comments c ON c.document_id = d.id
+      GROUP BY d.id
+      ORDER BY d.created_at DESC
     `);
 
     res.json(rows);
@@ -35,10 +37,11 @@ export async function createDocument(req, res) {
       });
     }
 
-    const [result] = await pool.query(
+    const { rows } = await pool.query(
       `
       INSERT INTO documents (title, description, filename, original_name)
-      VALUES (?, ?, ?, ?)
+      VALUES ($1, $2, $3, $4)
+      RETURNING id
       `,
       [
         title,
@@ -49,7 +52,7 @@ export async function createDocument(req, res) {
     );
 
     res.status(201).json({
-      id: result.insertId,
+      id: rows[0].id,
       title,
       description,
     });
@@ -58,6 +61,7 @@ export async function createDocument(req, res) {
     res.status(500).json({ error: "Erro ao salvar documento" });
   }
 }
+
 export async function getDocumentById(req, res) {
   try {
     const id = Number(req.params.id);
@@ -66,27 +70,27 @@ export async function getDocumentById(req, res) {
       return res.status(400).json({ error: "ID inválido" });
     }
 
-    const [[doc]] = await pool.query(
-      "SELECT * FROM documents WHERE id = ?",
+    const { rows: docs } = await pool.query(
+      "SELECT * FROM documents WHERE id = $1",
       [id]
     );
 
-    if (!doc) {
+    if (!docs.length) {
       return res.status(404).json({ error: "Documento não encontrado" });
     }
 
-    const [comments] = await pool.query(
+    const { rows: comments } = await pool.query(
       `
       SELECT id, content AS text, created_at
       FROM comments
-      WHERE document_id = ?
+      WHERE document_id = $1
       ORDER BY created_at DESC
       `,
       [id]
     );
 
     res.json({
-      ...doc,
+      ...docs[0],
       comments,
     });
   } catch (err) {
@@ -95,21 +99,12 @@ export async function getDocumentById(req, res) {
   }
 }
 
+/* ================= COMMENTS ================= */
+
 export async function createComment(req, res) {
   try {
     const documentId = Number(req.params.id);
     const { content } = req.body;
-
-    const [[doc]] = await pool.query(
-  "SELECT id FROM documents WHERE id = ?",
-  [documentId]
-);
-
-if (!doc) {
-  return res.status(404).json({
-    error: "Documento não encontrado"
-  });
-}
 
     if (!content) {
       return res.status(400).json({
@@ -117,10 +112,21 @@ if (!doc) {
       });
     }
 
+    const { rowCount } = await pool.query(
+      "SELECT id FROM documents WHERE id = $1",
+      [documentId]
+    );
+
+    if (!rowCount) {
+      return res.status(404).json({
+        error: "Documento não encontrado"
+      });
+    }
+
     await pool.query(
       `
       INSERT INTO comments (document_id, content)
-      VALUES (?, ?)
+      VALUES ($1, $2)
       `,
       [documentId, content]
     );
@@ -144,7 +150,7 @@ export async function updateComment(req, res) {
     }
 
     await pool.query(
-      `UPDATE comments SET content = ? WHERE id = ?`,
+      `UPDATE comments SET content = $1 WHERE id = $2`,
       [content, commentId]
     );
 
@@ -155,13 +161,12 @@ export async function updateComment(req, res) {
   }
 }
 
-
 export async function deleteComment(req, res) {
   try {
     const commentId = Number(req.params.commentId);
 
     await pool.query(
-      `DELETE FROM comments WHERE id = ?`,
+      `DELETE FROM comments WHERE id = $1`,
       [commentId]
     );
 
@@ -171,6 +176,8 @@ export async function deleteComment(req, res) {
     res.status(500).json({ error: "Erro ao excluir comentário" });
   }
 }
+
+/* ================= UPDATE / DELETE DOCUMENT ================= */
 
 export async function updateDocument(req, res) {
   try {
@@ -186,8 +193,8 @@ export async function updateDocument(req, res) {
     await pool.query(
       `
       UPDATE documents
-      SET title = ?, description = ?
-      WHERE id = ?
+      SET title = $1, description = $2
+      WHERE id = $3
       `,
       [title, description || null, documentId]
     );
@@ -205,15 +212,13 @@ export async function deleteDocument(req, res) {
   try {
     const documentId = Number(req.params.id);
 
-    // remove comentários
     await pool.query(
-      `DELETE FROM comments WHERE document_id = ?`,
+      `DELETE FROM comments WHERE document_id = $1`,
       [documentId]
     );
 
-    // remove documento
     await pool.query(
-      `DELETE FROM documents WHERE id = ?`,
+      `DELETE FROM documents WHERE id = $1`,
       [documentId]
     );
 
